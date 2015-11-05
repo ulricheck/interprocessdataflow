@@ -6,6 +6,7 @@
 #include "ipdf/ShmPort.h"
 
 #include "boost/date_time/posix_time/posix_time.hpp"
+#include <boost/thread/thread_time.hpp>
 
 #include <iostream>
 
@@ -39,16 +40,14 @@ int main()
         {
             bip::scoped_lock<bip::interprocess_mutex> lock(port->port_mutex);
             if (!port->data_available) {
-                boost::posix_time::ptime timeout = boost::posix_time::microsec_clock::local_time() + boost::posix_time::milliseconds(1);
+                boost::posix_time::ptime timeout = boost::get_system_time() + boost::posix_time::milliseconds(1);
                 bool was_notified = port->port_condition.timed_wait(lock, timeout);
-                if (!was_notified) {
-//                    std::cout << "no messages received" << std::endl;
+                if (was_notified) {
+                    process_queues = true;
                 }
+                port->data_available = false;
             }
-            port->data_available = false;
-            process_queues = true;
         }
-
 
         std::vector<unsigned long long> messages(0);
 
@@ -71,7 +70,10 @@ int main()
                 }
             }
         }
-        total_message_count += messages.size();
-        std::cout << " received " << total_message_count << " messages in total \n";
+
+        if (messages.size() > 0) {
+            total_message_count += messages.size();
+            std::cout << " received " << total_message_count << " messages in total \n";
+        }
     }
 }

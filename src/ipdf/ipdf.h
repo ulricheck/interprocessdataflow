@@ -7,6 +7,8 @@
 
 #include <boost/lockfree/spsc_queue.hpp> // ring buffer
 
+
+
 #include <boost/interprocess/managed_shared_memory.hpp>
 #include <boost/interprocess/allocators/allocator.hpp>
 #include <boost/interprocess/containers/string.hpp>
@@ -15,13 +17,16 @@
 #include <boost/range.hpp>
 
 namespace bip = boost::interprocess;
+namespace blf = boost::lockfree;
+
+
 namespace shm {
 typedef bip::allocator<char, bip::managed_shared_memory::segment_manager> char_alloc;
 typedef bip::basic_string<char, std::char_traits<char>, char_alloc> shared_string;
 
-typedef boost::lockfree::spsc_queue <
+typedef blf::spsc_queue <
 shared_string,
-boost::lockfree::capacity<200>
+blf::capacity<200>
 > ring_buffer;
 
 
@@ -44,8 +49,8 @@ struct ChannelMessage {
   shmem_int_vector active_buffers;
 };
 
-typedef boost::interprocess::allocator<ChannelMessage, bip::managed_shared_memory::segment_manager> shmem_channel_allocator;
-typedef boost::lockfree::spsc_queue<ChannelMessage, boost::lockfree::capacity<128> > channel_message_queue;
+typedef bip::allocator<ChannelMessage, bip::managed_shared_memory::segment_manager> shmem_channel_allocator;
+typedef blf::spsc_queue<ChannelMessage, blf::capacity<128> > channel_message_queue;
 }
 
 #endif //IPDF_IPDF_H
