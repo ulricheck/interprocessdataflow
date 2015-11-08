@@ -6,7 +6,7 @@
 
 #include "gtest/gtest.h"
 #include "ipdf/ipdf.h"
-#include "ipdf/memorypool.h"
+#include "ipdf/ShmBufferPool.h"
 #include "ipdf/ShmBufferRef.h"
 
 #include <iostream>
@@ -15,10 +15,10 @@
 #include <random>
 
 
+using namespace ipdf;
 
-
-template <typename T, size_t size, size_t n>
-void runner (blf::memorypool<T, blf::capacity<size> > *pool)
+template <typename T, size_t size, size_t n, size_t bs>
+void runner (ShmBufferPool<T, size >* pool)
 {
     std::vector<T> vec;
     std::random_device rd;
@@ -29,6 +29,7 @@ void runner (blf::memorypool<T, blf::capacity<size> > *pool)
     uint64_t buffer_underrruns = 0;
     uint64_t buffer_returns = 0;
 
+
     for (size_t i = 0; i < n; i++)
     {
         T buf;
@@ -38,18 +39,16 @@ void runner (blf::memorypool<T, blf::capacity<size> > *pool)
         case 1:
         case 2:
         case 3:
-            if (pool->obtain(buf)) {
-                if (buf.prepare(1024)) {
-                    vec.push_back(buf);
-                    buffer_hits++;
-                }
+            if (pool->obtain(buf, bs)) {
+                vec.push_back(buf);
+                buffer_hits++;
             } else {
                 buffer_underrruns++;
             }
             break;
         case 4:
             if (!vec.empty())
-                vec[generator() % vec.size()].data = rand();
+                vec[generator() % vec.size()].properties = rand();
             break;
         case 5:
             if (!vec.empty())
@@ -71,7 +70,7 @@ void runner (blf::memorypool<T, blf::capacity<size> > *pool)
             break;
         }
     }
-    std::cout << "buffer hits: " << buffer_hits << " underruns: " << buffer_underrruns <<  " returns: " << buffer_returns << std::endl;
+    BOOST_LOG_TRIVIAL(info) << "buffer hits: " << buffer_hits << " underruns: " << buffer_underrruns <<  " returns: " << buffer_returns;
 };
 
 // The fixture for testing class Foo.

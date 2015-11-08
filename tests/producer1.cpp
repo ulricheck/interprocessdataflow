@@ -20,8 +20,6 @@ int main()
     shm::shmem_channel_allocator alloc(segment.get_segment_manager());
     shm::channel_message_queue *queue = segment.find_or_construct<shm::channel_message_queue>("queue1")();
 
-
-
     for (unsigned int i = 0; i < 1000; i++)
     {
         boost::this_thread::sleep(boost::posix_time::milliseconds(33));

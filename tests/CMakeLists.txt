@@ -50,8 +50,6 @@ set_target_properties(libgmock PROPERTIES
 # I couldn't make it work with INTERFACE_INCLUDE_DIRECTORIES
 include_directories("${source_dir}/include")
 
-
-
 # two simple examples for now
 set(SOURCE_FILES_TEST_PRODUCER1 producer1.cpp)
 add_executable(ipdf_test_producer1 ${SOURCE_FILES_TEST_PRODUCER1})
@@ -68,7 +66,7 @@ target_link_libraries(ipdf_test_consumer ${requiredLibs})
 
 add_executable(ifpdf_tests
         test_main.cpp
-        memorypool_check.cpp
+        test_bufferpool.cpp
         )
 
 target_link_libraries(

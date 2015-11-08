@@ -10,6 +10,8 @@
 #include <boost/interprocess/sync/interprocess_mutex.hpp>
 #include <boost/interprocess/sync/interprocess_condition.hpp>
 
+namespace ipdf {
+
 class ShmPort {
 
 public:
@@ -19,5 +21,7 @@ public:
     bip::interprocess_condition  port_condition;
     bool data_available;
 };
+
+} // end namespace
 
 #endif //IPDF_SHMPORT_H
