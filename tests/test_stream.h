@@ -1,13 +1,13 @@
 //
-// Created by Ulrich Eck on 3/11/2015.
+// Created by Ulrich Eck on 8/11/2015.
 //
-#ifndef IPDF_MEMORYPOOL_CHECK_H_H
-#define IPDF_MEMORYPOOL_CHECK_H_H
 
+#ifndef IPDF_TEST_STREAM_H
+#define IPDF_TEST_STREAM_H
 #include "gtest/gtest.h"
 #include "ipdf/ipdf.h"
-#include "ipdf/ShmBufferPool.h"
-#include "ipdf/ShmBufferRef.h"
+#include "ipdf/StreamMessage.h"
+#include "ipdf/ShmStream.h"
 
 #include <iostream>
 #include <thread>
@@ -18,7 +18,7 @@
 using namespace ipdf;
 
 template <typename T, size_t size, size_t n, size_t bs>
-void bufferpool_runner (ShmBufferPool<T, size >* pool)
+void stream_runner_producer (ShmStream<T, size >* stream)
 {
     std::vector<T> vec;
     std::random_device rd;
@@ -32,6 +32,7 @@ void bufferpool_runner (ShmBufferPool<T, size >* pool)
 
     for (size_t i = 0; i < n; i++)
     {
+        unsigned long long ts = i * 1000;
         T buf;
         switch (dist(generator))
         {
@@ -39,7 +40,7 @@ void bufferpool_runner (ShmBufferPool<T, size >* pool)
         case 1:
         case 2:
         case 3:
-            if (pool->obtain(buf, bs)) {
+            if (stream->obtain(buf, bs)) {
                 vec.push_back(buf);
                 buffer_hits++;
             } else {
@@ -53,7 +54,7 @@ void bufferpool_runner (ShmBufferPool<T, size >* pool)
         case 5:
             if (!vec.empty())
             {
-                assert(pool->release(vec.back()));
+                assert(stream->release(vec.back()));
                 vec.pop_back();
                 buffer_returns++;
             }
@@ -62,7 +63,7 @@ void bufferpool_runner (ShmBufferPool<T, size >* pool)
             if (!vec.empty())
             {
                 for(auto p : vec) {
-                    assert(pool->release(p));
+                    assert(stream->release(p));
                     buffer_returns++;
                 }
                 vec.clear();
@@ -74,15 +75,15 @@ void bufferpool_runner (ShmBufferPool<T, size >* pool)
 };
 
 // The fixture for testing class Foo.
-class MemoryPoolTest: public ::testing::Test {
+class StreamTest: public ::testing::Test {
 
 protected:
 
     // You can do set-up work for each test here.
-    MemoryPoolTest();
+    StreamTest();
 
     // You can do clean-up work that doesn't throw exceptions here.
-    virtual ~MemoryPoolTest();
+    virtual ~StreamTest();
 
     // If the constructor and destructor are not enough for setting up
     // and cleaning up each test, you can define the following methods:
@@ -98,5 +99,4 @@ protected:
     // The mock bar library shaed by all tests
     //MockBar m_bar;
 };
-
-#endif //IPDF_MEMORYPOOL_CHECK_H_H
+#endif //IPDF_TEST_STREAM_H

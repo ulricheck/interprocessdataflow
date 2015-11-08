@@ -67,6 +67,7 @@ target_link_libraries(ipdf_test_consumer ${requiredLibs})
 add_executable(ifpdf_tests
         test_main.cpp
         test_bufferpool.cpp
+        test_stream.cpp
         )
 
 target_link_libraries(

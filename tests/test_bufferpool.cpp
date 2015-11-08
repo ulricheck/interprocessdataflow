@@ -34,12 +34,13 @@ TEST(MemoryPoolTest, MemoryPool_stresstest) {
 
     std::shared_ptr< bip::managed_shared_memory > msm(new bip::managed_shared_memory(bip::open_or_create, SHM_MEMORY_NAME, shm_size));
     std::unique_ptr< pool_t > pool(new pool_t(SHM_POOL_NAME, buffer_size, msm));
+    pool->allocate();
 
     std::array<std::thread, t> threads;
 
     for (int i = 0; i < t; i++)
     {
-        threads[i] = std::thread(&runner<ShmBufferRef<int>, size, n, buffer_size>, pool.get());
+        threads[i] = std::thread(&bufferpool_runner<ShmBufferRef<int>, size, n, buffer_size>, pool.get());
     }
 
     for (int i = 0; i < t; i++)
@@ -49,6 +50,7 @@ TEST(MemoryPoolTest, MemoryPool_stresstest) {
     }
 
     // delete pool
+    pool->deallocate();
     pool.reset(nullptr);
 
     BOOST_LOG_TRIVIAL(info) << "MSM all dealocated: " << msm->all_memory_deallocated();

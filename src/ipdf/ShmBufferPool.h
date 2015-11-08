@@ -91,33 +91,47 @@ public:
     //! Construct queue
     // @{
     ShmBufferPool(const char* name, size_type buffer_size, const std::shared_ptr<bip::managed_shared_memory>& msm)
-    : m_memory_manager(msm)
-    , m_stack(msm->find_or_construct<stack_t>(name)())
+    : m_pool_name(name)
+    , m_buffer_size(buffer_size)
+    , m_memory_manager(msm)
+    , m_stack(nullptr)
     {
-        BOOST_LOG_TRIVIAL(info) << "initialize ShmBufferPool";
-        for (unsigned int i=0; i < capacity; i++) {
-            T buf;
-            buf.prepare(buffer_size, *m_memory_manager);
-            m_stack->push(buf);
-        }
-        BOOST_LOG_TRIVIAL(info) << "initialized ShmBufferPool";
+        BOOST_LOG_TRIVIAL(info) << "ShmBufferPool constructor";
     }
 
     // @}
 
-
-    /** \copydoc boost::lockfree::stack::reserve
-     * */
-    void reserve(size_type n)
-    {
-        m_stack->reserve(n);
+    bool allocate() {
+        if (!m_stack) {
+            BOOST_LOG_TRIVIAL(info) << "allocate ShmBufferPool";
+            try {
+                m_stack = m_memory_manager->find_or_construct<stack_t>(m_pool_name)();
+            } catch (bip::bad_alloc &e) {
+                BOOST_LOG_TRIVIAL(error) << "Error during shm allocation: " << e.what();
+                return false;
+            }
+            for (unsigned int i=0; i < capacity; i++) {
+                T buf;
+                buf.prepare(m_buffer_size, *m_memory_manager);
+                m_stack->push(buf);
+            }
+        }
+        return true;
     }
 
-    /** \copydoc boost::lockfree::stack::reserve_unsafe
-     * */
-    void reserve_unsafe(size_type n)
-    {
-        m_stack->reserve_unsafe(n);
+    bool deallocate () {
+        if (m_stack) {
+            BOOST_LOG_TRIVIAL(info) << "deallocate ShmBufferPool";
+            T buf;
+            while (m_stack->pop(buf)) {
+                if (buf.is_allocated()) {
+                    buf.release(*m_memory_manager);
+                }
+            }
+            m_memory_manager->destroy_ptr(m_stack);
+            m_stack = nullptr;
+        }
+        return true;
     }
 
     /** Destroys queue, free all nodes from freelist.
@@ -126,14 +140,6 @@ public:
     {
         BOOST_LOG_TRIVIAL(info) << "ShmBufferPool deconstructor";
         // anything needs to be done for cleanup ??
-        T buf;
-        while (m_stack->pop(buf)) {
-            if (buf.is_allocated()) {
-                buf.release(*m_memory_manager);
-            }
-        }
-        m_memory_manager->destroy_ptr(m_stack);
-        m_stack = nullptr;
         m_memory_manager.reset();
     }
 
@@ -169,6 +175,8 @@ public:
 
 private:
 #ifndef BOOST_DOXYGEN_INVOKED
+    const char * m_pool_name;
+    size_t m_buffer_size;
     stack_t * m_stack;
     std::shared_ptr<bip::managed_shared_memory> m_memory_manager;
 #endif
