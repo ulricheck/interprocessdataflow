@@ -3,7 +3,7 @@
 //
 
 #include "ipdf/ipdf.h"
-#include "ipdf/ShmPort.h"
+#include "ipdf/ShmPortCondition.h"
 
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include <boost/thread/thread_time.hpp>
@@ -22,7 +22,7 @@ int main()
 
     // create segment and corresponding allocator
     bip::managed_shared_memory segment(bip::open_or_create, "ipdf_testdomain_simpletest", 65536);
-    ShmPort *port = segment.find_or_construct<ShmPort>("port_testing")();
+    ipdf::ShmPortCondition *port = segment.find_or_construct<ipdf::ShmPortCondition>("port_testing")();
 
     shm::shmem_channel_allocator alloc(segment.get_segment_manager());
     shm::channel_message_queue *queue1 = segment.find_or_construct<shm::channel_message_queue>("queue1")();

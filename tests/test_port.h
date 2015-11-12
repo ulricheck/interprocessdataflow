@@ -1,14 +1,13 @@
 //
-// Created by Ulrich Eck on 8/11/2015.
+// Created by Ulrich Eck on 10/11/2015.
 //
 
-#ifndef IPDF_TEST_STREAM_H
-#define IPDF_TEST_STREAM_H
+#ifndef IPDF_TEST_PORT_H
+#define IPDF_TEST_PORT_H
 
 #include "gtest/gtest.h"
 #include "ipdf/ipdf.h"
-#include "ipdf/StreamMessage.h"
-#include "ipdf/ShmStream.h"
+#include "ipdf/ShmPort.h"
 
 #include <iostream>
 #include <thread>
@@ -19,28 +18,21 @@
 using namespace ipdf;
 
 template <typename T, size_t size, size_t n, size_t bs>
-void stream_runner_producer (ShmStream<T, size >* stream)
+void port_runner_producer (ShmPort* stream)
 {
-    uint64_t msgs_received = 0;
-
-
-    for (size_t i = 0; i < n; i++)
-    {
-
-    }
-    BOOST_LOG_TRIVIAL(info) << "to be done ..";
+    BOOST_LOG_TRIVIAL(info) << "nothing there yet ...";
 };
 
 // The fixture for testing class Foo.
-class StreamTest: public ::testing::Test {
+class PortTest: public ::testing::Test {
 
 protected:
 
     // You can do set-up work for each test here.
-    StreamTest();
+    PortTest();
 
     // You can do clean-up work that doesn't throw exceptions here.
-    virtual ~StreamTest();
+    virtual ~PortTest();
 
     // If the constructor and destructor are not enough for setting up
     // and cleaning up each test, you can define the following methods:
@@ -56,5 +48,4 @@ protected:
     // The mock bar library shaed by all tests
     //MockBar m_bar;
 };
-
-#endif //IPDF_TEST_STREAM_H
+#endif //IPDF_TEST_PORT_H

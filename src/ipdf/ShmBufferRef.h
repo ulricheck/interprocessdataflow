@@ -7,6 +7,8 @@
 
 #include "ipdf/ipdf.h"
 
+namespace ipdf {
+
 template<typename T>
 struct ShmBufferRef {
 
@@ -79,5 +81,7 @@ private:
     bool m_is_allocated;
     bip::managed_shared_memory::handle_t m_handle;
 };
+
+} // end namespace
 
 #endif //IPDF_SHMBUFFERREF_H

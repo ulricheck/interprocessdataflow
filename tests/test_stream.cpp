@@ -29,12 +29,13 @@ TEST(StreamTest, Stream_stresstest) {
 
 
     const char *SHM_MEMORY_NAME = "SHM_TEST_IPDF_STREAM";
-    const char *SHM_STREAM_NAME = "TEST_STREAM";
+    const char *SHM_CHANNEL_NAME = "TESTCHANNEL";
+    const char *SHM_STREAM_NAME = "TESTSTREAM";
 
     size_t shm_size = sizeof(stream_t) + 8096 * 10;
 
     std::shared_ptr< bip::managed_shared_memory > msm(new bip::managed_shared_memory(bip::open_or_create, SHM_MEMORY_NAME, shm_size));
-    std::unique_ptr< stream_t > stream(new stream_t(SHM_STREAM_NAME, msm));
+    std::unique_ptr< stream_t > stream(new stream_t(SHM_CHANNEL_NAME, SHM_STREAM_NAME, msm));
     stream->allocate();
 
     //std::thread(&runner<ShmBufferRef<int>, size, n, buffer_size>, pool.get());
