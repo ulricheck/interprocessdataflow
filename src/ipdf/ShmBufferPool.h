@@ -27,29 +27,45 @@
 
 namespace ipdf {
 
-/** The memory pool manager uses a lockfree stack to manage memory segment references
- *
- *  \b Policies:
- *  - \ref boost::lockfree::fixed_sized, defaults to \c boost::lockfree::fixed_sized<false> \n
- *    Can be used to completely disable dynamic memory allocations during push in order to ensure lockfree behavior. \n
- *    If the data structure is configured as fixed-sized, the internal nodes are stored inside an array and they are addressed
- *    by array indexing. This limits the possible size of the ShmBufferPool to the number of elements that can be addressed by the index
- *    type (usually 2**16-2), but on platforms that lack double-width compare-and-exchange instructions, this is the best way
- *    to achieve lock-freedom.
- *
- *  - \ref boost::lockfree::capacity, optional \n
- *    If this template argument is passed to the options, the size of the ShmBufferPool is set at compile-time.\n
- *    It this option implies \c fixed_sized<true>
- *
- *  - \ref boost::lockfree::allocator, defaults to \c boost::lockfree::allocator<std::allocator<void>> \n
- *    Specifies the allocator that is used for the internal freelist
- *
- *  \b Requirements:
- *   - T must have a copy constructor
- *   - T must have a trivial assignment operator
- *   - T must have a trivial destructor
- *
- * */
+/* Example of ReleasePool implementation for C++14 .. needs refactoring...
+#include <algorithm>
+
+class Timer {
+protected:
+    virtual void startTimer(unsigned int frequency) {}
+    virtual void timerCallback() {}
+};
+
+class ReleasePool : private Timer
+{
+public:
+    ReleasePool() { startTimer (1000); }
+
+    template<typename T> void add (const std::shared_ptr<T>& object) {
+        if (object.empty())
+            return;
+        std::lock_guard<std::mutex> lock (m);
+        pool.emplace_back (object);
+    }
+private:
+    void timerCallback() override {
+        std::lock_guard<std::mutex> lock (m);
+        pool.erase(
+            std::remove_if (
+                pool.begin(), pool.end(),
+            [] (auto& object) { return object.use_count() <= 1; } ),
+            pool.end()
+        );
+    }
+
+    std::vector<std::shared_ptr<void>> pool;
+    std::mutex m;
+};
+*/
+
+
+/* The memory pool manager uses a lockfree stack to manage memory segment references
+ */
 template <typename T, size_t capacity>
 class ShmBufferPool
 #ifdef BOOST_NO_CXX11_DELETED_FUNCTIONS
