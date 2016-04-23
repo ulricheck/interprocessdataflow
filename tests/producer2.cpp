@@ -6,7 +6,12 @@
 #include "ipdf/ipdf.h"
 #include "ipdf/ShmPortCondition.h"
 
+#ifdef _WIN32
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
+
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/thread/thread.hpp>
 

@@ -7,14 +7,8 @@
 #include "test_port.h"
 #include "ipdf/StreamMessage.h"
 
-// optionally extend text fixture
-PortTest::PortTest() {}
-PortTest::~PortTest() {};
-void PortTest::SetUp() {};
-void PortTest::TearDown() {};
 
-
-TEST(PortTest, Port_assemblytest) {
+void TestPort() {
 
     static const size_t port_ringbuffer_size = 4096;
     static const size_t buffer_size = 8096;
@@ -57,5 +51,6 @@ TEST(PortTest, Port_assemblytest) {
     port->deallocate();
     port.reset(nullptr);
 
+    BOOST_TEST( true ); // dummy for now
     BOOST_LOG_TRIVIAL(info) << "MSM all dealocated: " << msm->all_memory_deallocated();
 }

@@ -4,14 +4,8 @@
 #include <iostream>
 #include "test_bufferpool.h"
 
-// optionally extend text fixture
-MemoryPoolTest::MemoryPoolTest() {}
-MemoryPoolTest::~MemoryPoolTest() {};
-void MemoryPoolTest::SetUp() {};
-void MemoryPoolTest::TearDown() {};
 
-
-TEST(MemoryPoolTest, MemoryPool_stresstest) {
+void TestBufferPool() {
 
     static const size_t n = 20000;
     static const size_t t = 8;

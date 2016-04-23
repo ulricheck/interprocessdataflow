@@ -5,14 +5,7 @@
 #include <iostream>
 #include "test_stream.h"
 
-// optionally extend text fixture
-StreamTest::StreamTest() {}
-StreamTest::~StreamTest() {};
-void StreamTest::SetUp() {};
-void StreamTest::TearDown() {};
-
-
-TEST(StreamTest, Stream_stresstest) {
+void TestStream() {
 
     static const size_t n = 20000;
     static const size_t t = 8;
@@ -44,5 +37,6 @@ TEST(StreamTest, Stream_stresstest) {
     stream->deallocate();
     stream.reset(nullptr);
 
+    BOOST_TEST( true ); // dummy for now
     BOOST_LOG_TRIVIAL(info) << "MSM all dealocated: " << msm->all_memory_deallocated();
 }
