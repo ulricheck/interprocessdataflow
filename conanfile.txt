@@ -1,13 +1,15 @@
 [requires]
 Boost/1.60.0@ulricheck/stable
 zlib/1.2.8@lasote/stable
+catch/1.5.0@ulricheck/stable
 
 [options]
-boost:with_python=trues
+boost:with_python=true
+boost:shared=true
 
 [generators]
 cmake
 
 [imports]
-bin, *.dll -> ./bin
-lib, *.dylib* -> ./bin
+bin, *.dll -> ./build/bin
+lib, *.dylib* -> ./build/bin

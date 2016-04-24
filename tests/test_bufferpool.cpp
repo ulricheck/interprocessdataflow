@@ -1,11 +1,12 @@
 //
 // Created by Ulrich Eck on 3/11/2015.
 //
+
 #include <iostream>
 #include "test_bufferpool.h"
 
 
-void TestBufferPool() {
+TEST_CASE( "Testing BufferPool", "[ipdf_basic]" ) {
 
     static const size_t n = 20000;
     static const size_t t = 8;
@@ -48,4 +49,5 @@ void TestBufferPool() {
     pool.reset(nullptr);
 
     BOOST_LOG_TRIVIAL(info) << "MSM all dealocated: " << msm->all_memory_deallocated();
+    REQUIRE(msm->all_memory_deallocated() == true);
 }

@@ -2,13 +2,12 @@
 // Created by Ulrich Eck on 10/11/2015.
 //
 
-
 #include <iostream>
 #include "test_port.h"
 #include "ipdf/StreamMessage.h"
 
 
-void TestPort() {
+TEST_CASE( "Testing Port", "[ipdf_basic]" ) {
 
     static const size_t port_ringbuffer_size = 4096;
     static const size_t buffer_size = 8096;
@@ -51,6 +50,6 @@ void TestPort() {
     port->deallocate();
     port.reset(nullptr);
 
-    BOOST_TEST( true ); // dummy for now
     BOOST_LOG_TRIVIAL(info) << "MSM all dealocated: " << msm->all_memory_deallocated();
+    REQUIRE(msm->all_memory_deallocated() == true);
 }

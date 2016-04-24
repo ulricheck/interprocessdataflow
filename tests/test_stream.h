@@ -5,12 +5,11 @@
 #ifndef IPDF_TEST_STREAM_H
 #define IPDF_TEST_STREAM_H
 
+#include "catch.hpp"
+
 #include "ipdf/ipdf.h"
 #include "ipdf/StreamMessage.h"
 #include "ipdf/ShmStream.h"
-
-#include <boost/test/unit_test.hpp>
-#include <boost/test/floating_point_comparison.hpp>
 
 #include <iostream>
 #include <thread>

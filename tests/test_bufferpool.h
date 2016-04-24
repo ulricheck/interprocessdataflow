@@ -4,12 +4,11 @@
 #ifndef IPDF_MEMORYPOOL_CHECK_H_H
 #define IPDF_MEMORYPOOL_CHECK_H_H
 
+#include "catch.hpp"
+
 #include "ipdf/ipdf.h"
 #include "ipdf/ShmBufferPool.h"
 #include "ipdf/ShmBufferRef.h"
-
-#include <boost/test/unit_test.hpp>
-#include <boost/test/floating_point_comparison.hpp>
 
 #include <iostream>
 #include <thread>
@@ -55,7 +54,7 @@ void bufferpool_runner (ShmBufferPool<T, size >* pool)
         case 5:
             if (!vec.empty())
             {
-                BOOST_TEST(pool->release(vec.back()));
+                REQUIRE(pool->release(vec.back()) == true);
                 vec.pop_back();
                 buffer_returns++;
             }
@@ -64,7 +63,7 @@ void bufferpool_runner (ShmBufferPool<T, size >* pool)
             if (!vec.empty())
             {
                 for(auto p : vec) {
-                    BOOST_TEST(pool->release(p));
+                    REQUIRE(pool->release(p) == true);
                     buffer_returns++;
                 }
                 vec.clear();
@@ -75,7 +74,6 @@ void bufferpool_runner (ShmBufferPool<T, size >* pool)
     // check buffer_hits
     // check buffer_underruns
     // check buffer_returns
-    BOOST_TEST( true ); // dummy for now
     BOOST_LOG_TRIVIAL(info) << "buffer hits: " << buffer_hits << " underruns: " << buffer_underrruns <<  " returns: " << buffer_returns;
 };
 

@@ -5,7 +5,7 @@
 #include <iostream>
 #include "test_stream.h"
 
-void TestStream() {
+TEST_CASE( "Testing Stream", "[ipdf_basic]" ) {
 
     static const size_t n = 20000;
     static const size_t t = 8;
@@ -37,6 +37,6 @@ void TestStream() {
     stream->deallocate();
     stream.reset(nullptr);
 
-    BOOST_TEST( true ); // dummy for now
     BOOST_LOG_TRIVIAL(info) << "MSM all dealocated: " << msm->all_memory_deallocated();
+    REQUIRE(msm->all_memory_deallocated() == true);
 }

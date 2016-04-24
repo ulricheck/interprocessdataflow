@@ -9,6 +9,16 @@ IF(UNIX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 ENDIF(UNIX)
 
+set(requiredLibs "")
+
+find_package(Boost 1.60.0 COMPONENTS system date_time log thread)
+if(Boost_FOUND)
+   include_directories(${Boost_INCLUDE_DIRS})
+   set(requiredLibs ${requiredLibs} ${Boost_LIBRARIES})
+else()
+   set(requiredLibs ${requiredLibs} ${CONAN_LIBS})
+endif()
+
 include_directories(src)
 
 enable_testing()
