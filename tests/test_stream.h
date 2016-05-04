@@ -5,14 +5,13 @@
 #ifndef IPDF_TEST_STREAM_H
 #define IPDF_TEST_STREAM_H
 
-#include "catch.hpp"
+#include "ipdf/catch.hpp"
 
 #include "ipdf/ipdf.h"
 #include "ipdf/StreamMessage.h"
 #include "ipdf/ShmStream.h"
 
 #include <iostream>
-#include <thread>
 #include <vector>
 #include <random>
 

@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include "boost/thread.hpp"
 #include "test_bufferpool.h"
 
 
@@ -31,11 +32,11 @@ TEST_CASE( "Testing BufferPool", "[ipdf_basic]" ) {
     std::unique_ptr< pool_t > pool(new pool_t(SHM_POOL_NAME, buffer_size, msm));
     pool->allocate();
 
-    std::array<std::thread, t> threads;
+    std::array<boost::thread, t> threads;
 
     for (int i = 0; i < t; i++)
     {
-        threads[i] = std::thread(&bufferpool_runner<ShmBufferRef<int>, size, n, buffer_size>, pool.get());
+        threads[i] = boost::thread(&bufferpool_runner<ShmBufferRef<int>, size, n, buffer_size>, pool.get());
     }
 
     for (int i = 0; i < t; i++)

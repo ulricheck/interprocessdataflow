@@ -24,16 +24,16 @@ public:
 
     bool allocate() {
         bool ret = true;
-        for (auto &e : m_streams) {
-            ret &= e->allocate();
+        for (std::vector<std::shared_ptr< ShmStreamBase > >::iterator it=m_streams.begin(); it!=m_streams.end(); ++it) {
+            ret &= (*it)->allocate();
         }
         return ret;
     }
 
     bool deallocate() {
         bool ret = true;
-        for (auto &e : m_streams) {
-            ret &= e->deallocate();
+        for (std::vector<std::shared_ptr< ShmStreamBase > >::iterator it=m_streams.begin(); it!=m_streams.end(); ++it) {
+            ret &= (*it)->deallocate();
         }
         return ret;
     }

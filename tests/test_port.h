@@ -5,13 +5,12 @@
 #ifndef IPDF_TEST_PORT_H
 #define IPDF_TEST_PORT_H
 
-#include "catch.hpp"
+#include "ipdf/catch.hpp"
 
 #include "ipdf/ipdf.h"
 #include "ipdf/ShmPort.h"
 
 #include <iostream>
-#include <thread>
 #include <vector>
 #include <random>
 

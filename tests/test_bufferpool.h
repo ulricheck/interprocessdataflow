@@ -4,14 +4,13 @@
 #ifndef IPDF_MEMORYPOOL_CHECK_H_H
 #define IPDF_MEMORYPOOL_CHECK_H_H
 
-#include "catch.hpp"
+#include "ipdf/catch.hpp"
 
 #include "ipdf/ipdf.h"
 #include "ipdf/ShmBufferPool.h"
 #include "ipdf/ShmBufferRef.h"
 
 #include <iostream>
-#include <thread>
 #include <vector>
 #include <random>
 
@@ -62,8 +61,8 @@ void bufferpool_runner (ShmBufferPool<T, size >* pool)
         case 6:
             if (!vec.empty())
             {
-                for(auto p : vec) {
-                    REQUIRE(pool->release(p) == true);
+				for (std::vector<T>::iterator it=vec.begin(); it!=vec.end(); ++it) {
+                    REQUIRE(pool->release(*it) == true);
                     buffer_returns++;
                 }
                 vec.clear();

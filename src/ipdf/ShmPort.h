@@ -31,8 +31,8 @@ public:
             pc_name.append("_condition");
             m_port_condition = m_memory_manager->find_or_construct<ShmPortCondition>(pc_name.c_str())();
             bool ret = true;
-            for (auto &e : m_channels) {
-                ret &= e->allocate();
+			for (std::vector<std::shared_ptr< ShmChannel > >::iterator it=m_channels.begin(); it!=m_channels.end(); ++it) {
+                ret &= (*it)->allocate();
             }
             return ret;
         } catch (bip::bad_alloc &e) {
@@ -43,8 +43,8 @@ public:
 
     bool deallocate() {
         bool ret = true;
-        for (auto &e : m_channels) {
-            ret &= e->deallocate();
+		for (std::vector<std::shared_ptr< ShmChannel > >::iterator it=m_channels.begin(); it!=m_channels.end(); ++it) {
+            ret &= (*it)->deallocate();
         }
         if (m_port_condition) {
             m_memory_manager->destroy_ptr(m_port_condition);
