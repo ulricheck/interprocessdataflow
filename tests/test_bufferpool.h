@@ -61,7 +61,7 @@ void bufferpool_runner (ShmBufferPool<T, size >* pool)
         case 6:
             if (!vec.empty())
             {
-				for (std::vector<T>::iterator it=vec.begin(); it!=vec.end(); ++it) {
+				for (auto it=vec.begin(); it!=vec.end(); ++it) {
                     REQUIRE(pool->release(*it) == true);
                     buffer_returns++;
                 }
